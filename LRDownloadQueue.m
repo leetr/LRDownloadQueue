@@ -89,7 +89,7 @@
 
 //
 - (void)add:(NSURL *)url 
-    success:(void(^)(NSData *))success
+    success:(void(^)(NSData *data))success
     failure:(void(^)(NSError *error))failure
 {   
     [_queueLock lock];
@@ -102,7 +102,7 @@
 //
 - (void)bump
 {
-    if (self.operationCount < self.maxConcurrentOperationCount) {
+    if (self.operationCount < self.maxConcurrentOperationCount && _queue.count > 0) {
         [_queueLock lock];
         NSOperation *op = [_queue objectAtIndex:0];
         [[op retain] autorelease];

@@ -15,11 +15,11 @@
          failure:(void(^)(NSError *error))failure;
 
 - (void)addFirst:(NSURL *)url 
-         success:(void(^)(NSData *))success
+         success:(void(^)(NSData *data))success
          failure:(void(^)(NSError *error))failure;
 
 - (void)add:(NSURL *)url 
-    success:(void(^)(NSData *))success
+    success:(void(^)(NSData *data))success
     failure:(void(^)(NSError *error))failure;
 
 
