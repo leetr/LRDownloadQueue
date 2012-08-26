@@ -102,14 +102,17 @@
 //
 - (void)bump
 {
-    if (self.operationCount < self.maxConcurrentOperationCount && _queue.count > 0) {
+    if (self.operationCount < self.maxConcurrentOperationCount) {
         [_queueLock lock];
-        NSOperation *op = [_queue objectAtIndex:0];
-        [[op retain] autorelease];
-        [_queue removeObjectAtIndex:0];
+        if (_queue.count > 0) {
+            
+            NSOperation *op = [_queue objectAtIndex:0];
+            [[op retain] autorelease];
+            [_queue removeObjectAtIndex:0];
+            
+            [self addOperation:op];
+        }
         [_queueLock unlock];
-        
-        [self addOperation:op];
     }
 }
 
