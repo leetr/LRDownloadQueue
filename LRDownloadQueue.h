@@ -12,15 +12,22 @@
 + (LRDownloadQueue *)sharedQueue;
 + (void)download:(NSString *)uri 
          success:(void(^)(NSData *data))success
-         failure:(void(^)(NSError *error))failure;
+         failure:(void(^)(NSError *error))failure __attribute__((deprecated));
 
-- (void)addFirst:(NSURL *)url 
+- (void)addFirst:(NSURL *)url
          success:(void(^)(NSData *data))success
-         failure:(void(^)(NSError *error))failure;
+         failure:(void(^)(NSError *error))failure __attribute__((deprecated));
 
 - (void)add:(NSURL *)url 
     success:(void(^)(NSData *data))success
-    failure:(void(^)(NSError *error))failure;
+    failure:(void(^)(NSError *error))failure __attribute__((deprecated));
 
+- (void)addURL:(NSURL *)url
+    success:(void(^)(NSData *data, NSURL *url))success
+    failure:(void(^)(NSError *error, NSURL *url))failure;
+
+- (void)addURLFirst:(NSURL *)url
+       success:(void(^)(NSData *data, NSURL *url))success
+       failure:(void(^)(NSError *error, NSURL *url))failure;
 
 @end

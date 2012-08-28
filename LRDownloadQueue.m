@@ -99,6 +99,30 @@
     [self bump];
 }
 
+- (void)addURL:(NSURL *)url
+       success:(void(^)(NSData *data, NSURL *url))success
+       failure:(void(^)(NSError *error, NSURL *url))failure
+
+{
+    [_queueLock lock];
+    [_queue addObject:[self operationWithUrl:url success:success failure:failure]];
+    [_queueLock unlock];
+    
+    [self bump];
+}
+
+- (void)addURLFirst:(NSURL *)url
+            success:(void(^)(NSData *data, NSURL *url))success
+            failure:(void(^)(NSError *error, NSURL *url))failure
+{
+    [_queueLock lock];
+    [_queue insertObject:[self operationWithUrl:url success:success failure:failure] atIndex:0];
+    [_queueLock unlock];
+    
+    [self bump];
+}
+
+
 //
 - (void)bump
 {
@@ -140,6 +164,36 @@
             
             if (success != nil) {
                 success(data);
+            }
+        }
+        
+        [self bump];
+    }];
+}
+
+//
+- (NSBlockOperation *)operationWithUrl:(NSURL *)url
+                          success:(void(^)(NSData *data, NSURL *url))success
+                          failure:(void(^)(NSError *error, NSURL *url))failure
+{
+    return [NSBlockOperation blockOperationWithBlock:^{
+        NSURLRequest *request = [NSURLRequest requestWithURL:url
+                                                 cachePolicy:NSURLRequestReturnCacheDataElseLoad
+                                             timeoutInterval:20.0];
+        
+        NSURLResponse *response = nil;
+        NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:nil];
+        
+        if (data == nil) {
+            
+            if (failure != nil) {
+                NSError *error = [NSError errorWithDomain:NSURLErrorDomain code:33 userInfo:nil];
+                failure(error, url);
+            }
+        } else {
+            
+            if (success != nil) {
+                success(data, url);
             }
         }
         
