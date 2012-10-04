@@ -44,7 +44,7 @@
 {
     NSURL *url = [NSURL URLWithString:uri];
     
-    [[LRDownloadQueue sharedQueue] add:url success:success failure:failure];
+    [[self sharedQueue] add:url success:success failure:failure];
 }
 
 //
@@ -151,13 +151,12 @@
                                              timeoutInterval:20.0];
         
         NSURLResponse *response = nil;
-        NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:nil];
+        NSError *error = nil;
+        NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
         
-        if (data == nil) {
+        if (error) {
             
             if (failure != nil) {
-                NSError *error = [NSError errorWithDomain:NSURLErrorDomain code:33 userInfo:nil];
-                
                 failure(error);
             }
         } else {
