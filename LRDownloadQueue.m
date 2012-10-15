@@ -157,12 +157,16 @@
         if (error) {
             
             if (failure != nil) {
-                failure(error);
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    failure(error);
+                });
             }
         } else {
             
             if (success != nil) {
-                success(data);
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    success(data);
+                });
             }
         }
         
@@ -187,12 +191,18 @@
         if (error) {
             
             if (failure != nil) {
-                failure(error, url);
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    failure(error, url);
+                });
             }
-        } else {
+        }
+        else {
             
             if (success != nil) {
-                success(data, url);
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    success(data, url);
+                });
             }
         }
         
